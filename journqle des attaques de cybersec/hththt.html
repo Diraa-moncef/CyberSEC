@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal des Attaques</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden; /* Empêche le défilement pour l’animation */
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: auto;
+            background: rgba(0, 31, 63, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        select, textarea, button {
+            padding: 10px;
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            background: rgba(0, 42, 74, 0.9);
+            color: #ffffff;
+            box-shadow: inset 0 0 5px rgba(0, 212, 255, 0.5);
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #00d4ff;
+            color: #012a4a;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #00a3cc;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #00d4ff;
+            text-align: left;
+        }
+
+        th {
+            background-color: rgba(1, 58, 99, 0.9);
+            color: #00d4ff;
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.8);
+        }
+
+        td {
+            background-color: rgba(1, 42, 74, 0.9);
+            color: #ffffff;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: rgba(1, 58, 99, 0.8);
+        }
+
+        tbody tr:hover {
+            background-color: #00a3cc;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <div class="container">
+        <header>
+            <h1>Journal des Attaques de Cybersécurité</h1>
+        </header>
+
+        <main>
+            <section id="add-attack">
+                <h2>Ajouter une attaque</h2>
+                <form id="attack-form">
+                    <label for="attack-type">Type d'attaque :</label>
+                    <select id="attack-type" required>
+                        <option value="Phishing">Phishing</option>
+                        <option value="DDoS">DDoS</option>
+                        <option value="Injection SQL">Injection SQL</option>
+                        <option value="XSS">XSS</option>
+                    </select>
+
+                    <label for="severity">Gravité :</label>
+                    <select id="severity" required>
+                        <option value="Faible">Faible</option>
+                        <option value="Moyenne">Moyenne</option>
+                        <option value="Élevée">Élevée</option>
+                    </select>
+
+                    <label for="status">Statut :</label>
+                    <select id="status" required>
+                        <option value="En cours">En cours</option>
+                        <option value="Résolu">Résolu</option>
+                    </select>
+
+                    <label for="description">Description :</label>
+                    <textarea id="description" rows="3" required></textarea>
+
+                    <button type="submit">Ajouter</button>
+                </form>
+            </section>
+
+            <section id="attack-log">
+                <h2>Journal des Attaques</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Gravité</th>
+                            <th>Statut</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attack-table-body">
+                        <!-- Les entrées ajoutées apparaîtront ici -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const rainDrops = Array(Math.floor(columns)).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00d4ff'; // Bleu pour les caractères
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        }
+
+        setInterval(draw, 30);
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

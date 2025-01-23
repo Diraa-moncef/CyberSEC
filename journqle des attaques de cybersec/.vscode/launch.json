@@ -1,0 +1,14 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open hththt.html",
+            "file": "c:\\Users\\RPC\\Desktop\\Coursera 0Q2GKTHG73BZ_250102_200414\\hththt.html"
+        }
+    ]
+}
